@@ -42,7 +42,7 @@ class DataHandler:
         model_max_length: int = 256,
         train_on_inputs: bool = True,
     ) -> None:
-        if model_max_length > 2048:
+        if int(model_max_length) > 2048:
             logger.warn(f"{model_max_length} exceeds the max token length LLaMA was trained with.")
         self.prompt_template = load_json(prompt_template)
         self.model_max_length = model_max_length

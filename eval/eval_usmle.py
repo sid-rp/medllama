@@ -10,12 +10,12 @@ a medalpaca model:
 export HF_HOME=/path/to/hf_cache
 
 python eval_usmle.py \
-    --model_name 'medalpaca/medalpaca-lora-13b-8bit' \
-    --prompt_template '../medalpaca/prompt_templates/medalpaca.json' \
+    --model_name 'meta-llama/Llama-3.2-3B' \
+    --prompt_template '../medalpaca/prompt_templates/med_llama3.json' \
     --base_model 'decapoda-research/llama-13b-hf' \
     --peft True \
     --load_in_8bit True \
-    --path_to_exams 'data/test/'
+    --path_to_exams '/scratch/sp7835/medAlpaca/usmle'
 
 This will create three new files in 'data/test', named stepX_MODELNAME.json. 
 
@@ -155,9 +155,9 @@ def main(
                 continue
             for j in range(ntries): 
                 response = model(
-                    instruction="Answer this multiple choice question.", 
+                    instruction="Answer this multiple-choice question by selecting only the correct answer letter (e.g., 'A', 'B', etc.).", 
                     input=format_question(question), 
-                    output="The Answer to the question is:",
+                    output="Answer:",
                     **sampling
                 )
                 response = strip_special_chars(response)

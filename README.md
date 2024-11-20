@@ -47,16 +47,19 @@ Just replace `<PATH_TO_LLAMA_WEIGHTS>` with the folder containing you LLaMA or A
 
 ```bash
 python medalpaca/train.py \
-    --model PATH_TO_LLAMA_WEIGHTS \
-    --data_path medical_meadow_small.json \
-    --output_dir 'output' \
-    --train_in_8bit True \  
-    --use_lora True \
-    --bf16 True \
+    --model meta-llama/Llama-3.2-3B \
+    --prompt_template medalpaca/prompt_templates/medalpaca.json \
+    --data_path /scratch/sp7835/medAlpaca/data/merged_medical_meadow.json \
+    --val_set_size 0.1 \
+    --output_dir 'sft' \
+    --train_in_8bit False \
+    --model_max_length 256 \
+    --use_wandb False \
+    --bf16 False \
     --tf32 False \
-    --fp16 False \
-    --global_batch_size 128 \
-    --per_device_batch_size 8 \
+    --fp16 True \
+    --global_batch_size 8 \
+    --per_device_batch_size 8
 ```
 Per default the script performs mixed precision training.  
 You can toggle 8bit training with the `train_in_8bit` flag. 

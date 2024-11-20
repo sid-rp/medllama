@@ -109,10 +109,8 @@ class Inferer:
         return model
     
     def _load_tokenizer(self, model_name: str): 
-        if "llama" in model_name.lower():
-            tokenizer = LlamaTokenizer.from_pretrained(model_name)
-        else:
-            tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
         tokenizer.pad_token_id = 0
         tokenizer.padding_side = "left"    
         return tokenizer
