@@ -167,3 +167,10 @@ usmle/step3_output_lora.json
 medalpaca/prompt_templates/med_llama3.json
 output.tar
 requirements_mamba.txt
+
+qlora_20241119_121350_sid
+sft_20241119_123015_sid
+qlora_20241124_205233_sid
+galore_20241124_210945_sid
+galore_20241125_155406_sid
+sft_20241124_210106_sid
