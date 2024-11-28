@@ -26,7 +26,7 @@ from transformers import (
 
 # Set up argument parser
 parser = ArgumentParser()
-parser.add_argument("--prompt_template", type=str, default="medalpaca/prompt_templates/medalpaca.json")
+parser.add_argument("--prompt_template", type=str, default="medalpaca/prompt_templates/medalpaca_new.json")
 parser.add_argument("--model_max_length", type=int, default=256)
 parser.add_argument("--train_on_inputs", type=bool, default=True)
 parser.add_argument("--data_path", type=str, default="/scratch/sp7835/medAlpaca/data/merged_medical_meadow.json")
@@ -88,9 +88,9 @@ if finetuning_method == "qlora":
     model = prepare_model_for_kbit_training(model)
 
     qlora_config = LoraConfig(
-        r=16,
+        r=32,
         lora_alpha=32,
-        target_modules=["k_proj", "v_proj", "q_proj"],
+        target_modules=["k_proj", "v_proj", "q_proj","o_proj"],
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
@@ -99,9 +99,9 @@ if finetuning_method == "qlora":
 elif finetuning_method == "lora":
     model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16)
     lora_config = LoraConfig(
-        r=16,
+        r=32,
         lora_alpha=32,
-        target_modules=["k_proj", "v_proj", "q_proj"],
+        target_modules=["k_proj", "v_proj", "q_proj","o_proj"],
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
@@ -121,10 +121,10 @@ model.config.use_cache = False
 if finetuning_method == "qlora":
     training_args = TrainingArguments(
         output_dir=output_dir,
-        evaluation_strategy="epoch",
+        eval_strategy="epoch",
         per_device_train_batch_size=args.batch_size,
         per_device_eval_batch_size=args.batch_size,
-        gradient_accumulation_steps=1,
+        gradient_accumulation_steps=6,
         num_train_epochs=args.epochs,
         weight_decay=0.01,
         bf16=True,
@@ -137,10 +137,10 @@ if finetuning_method == "qlora":
 elif finetuning_method == "galore":
     training_args = TrainingArguments(
         output_dir=output_dir,
-        evaluation_strategy="epoch",
+        eval_strategy="epoch",
         per_device_train_batch_size=args.batch_size,
         per_device_eval_batch_size=args.batch_size,
-        gradient_accumulation_steps=1,
+        gradient_accumulation_steps=6,
         num_train_epochs=args.epochs,
         weight_decay=0.01,
         bf16=True,
@@ -154,10 +154,10 @@ elif finetuning_method == "galore":
 else:
     training_args = TrainingArguments(
         output_dir=output_dir,
-        evaluation_strategy="epoch",
+        eval_strategy="epoch",
         per_device_train_batch_size=args.batch_size,
         per_device_eval_batch_size=args.batch_size,
-        gradient_accumulation_steps=1,
+        gradient_accumulation_steps=6,
         num_train_epochs=args.epochs,
         weight_decay=0.01,
         bf16=True,
@@ -165,6 +165,8 @@ else:
         save_total_limit=2,
         learning_rate=args.learning_rate,
         report_to="wandb",
+        #eval_strategy="steps",
+        #eval_steps = 7000
     )
 
 # Utility to print trainable parameters
