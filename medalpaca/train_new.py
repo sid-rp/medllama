@@ -34,7 +34,7 @@ parser.add_argument("--val_set_size", type=float, default=0.1)
 parser.add_argument("--batch_size", type=int, default=4)
 parser.add_argument("--epochs", type=int, default=1)
 parser.add_argument("--learning_rate", type=float, default=2e-5)
-parser.add_argument("--finetuning_method", type=str, choices=["sft", "lora", "qlora"], required=True)
+parser.add_argument("--finetuning_method", type=str, choices=["sft", "lora", "qlora", "galore"], required=True)
 
 args = parser.parse_args()
 
@@ -45,6 +45,7 @@ timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 output_dir = f"{finetuning_method}_{timestamp}_sid"
 logging_dir = f"log-{output_dir}"
 wandb.init(project="llama", name=output_dir, config=args)
+
 # Load tokenizer
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 tokenizer.pad_token_id = 0
@@ -74,7 +75,7 @@ else:
 # Data collator
 data_collator = DataCollatorForSeq2Seq(tokenizer, padding=True)
 
-# Load model
+# Load model based on finetuning method
 if finetuning_method == "qlora":
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
@@ -107,13 +108,16 @@ elif finetuning_method == "lora":
     )
     model.gradient_checkpointing_enable()
     model = get_peft_model(model, lora_config)
+elif finetuning_method == "galore":
+    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16)
+    model.gradient_checkpointing_enable()
 else:  # Supervised Fine-Tuning (SFT)
     model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16)
     model.gradient_checkpointing_enable()
 
 model.config.use_cache = False
 
-# Define training arguments
+# Define training arguments based on finetuning method
 if finetuning_method == "qlora":
     training_args = TrainingArguments(
         output_dir=output_dir,
@@ -128,7 +132,24 @@ if finetuning_method == "qlora":
         save_total_limit=2,
         learning_rate=args.learning_rate,
         report_to="wandb",
-        optim="paged_adamw_8bit",  # Use paged_adamw_8bit for QLoRA
+        optim="paged_adamw_8bit",
+    )
+elif finetuning_method == "galore":
+    training_args = TrainingArguments(
+        output_dir=output_dir,
+        evaluation_strategy="epoch",
+        per_device_train_batch_size=args.batch_size,
+        per_device_eval_batch_size=args.batch_size,
+        gradient_accumulation_steps=1,
+        num_train_epochs=args.epochs,
+        weight_decay=0.01,
+        bf16=True,
+        logging_dir=logging_dir,
+        save_total_limit=2,
+        learning_rate=args.learning_rate,
+        report_to="wandb",
+        optim="galore_adamw",
+        optim_target_modules=["k_proj", "v_proj", "q_proj", "o_proj", "gate_proj", "down_proj", "up_proj"],
     )
 else:
     training_args = TrainingArguments(
