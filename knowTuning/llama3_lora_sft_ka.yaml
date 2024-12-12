@@ -1,0 +1,40 @@
+### model
+model_name_or_path: meta-llama/Llama-3.2-3B
+
+### method
+stage: dpo
+do_train: true
+finetuning_type: lora
+lora_target: q_proj,v_proj
+load_best_model_at_end: true
+
+### dataset
+dataset: medquad_KC
+template: alpaca
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+### output
+resume_from_checkpoint: saves/llama3-8b/lora/ka
+output_dir: saves/llama3-8b/lora/kc
+logging_steps: 10
+save_steps: 1000
+plot_loss: true
+overwrite_output_dir: true
+
+### train
+per_device_train_batch_size: 16
+gradient_accumulation_steps: 1
+learning_rate: 1.0e-5
+num_train_epochs: 1.0
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+bf16: true
+pref_ftx: 0.2
+ddp_timeout: 180000000
+
+### eval
+val_size: 0.1
+per_device_eval_batch_size: 1
+eval_strategy: steps
+eval_steps: 500
