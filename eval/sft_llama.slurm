@@ -12,23 +12,15 @@
 #SBATCH --error=slurm_%j.err
 #SBATCH --requeue
 
-singularity exec --bind /scratch --nv --overlay /scratch/sp7835/overlay-50G-10M.ext3:ro /scratch/sp7835/cuda11.8.86-cudnn8.7-devel-ubuntu22.04.2.sif /bin/bash -c "
+singularity exec --bind /scratch --nv --overlay /scratch/ym3144/overlay-25G-10M.ext3:ro /scratch/ym3144/cuda11.8.86-cudnn8.7-devel-ubuntu22.04.2.sif /bin/bash -c "
     source /ext3/miniconda3/etc/profile.d/conda.sh
     conda activate medalpaca
-    cd /scratch/sp7835/medAlpaca
-    python medalpaca/train.py \
-        --model meta-llama/Llama-3.2-3B \
-        --prompt_template medalpaca/prompt_templates/medalpaca.json \
-        --data_path medical_meadow_small.json \
-        --val_set_size 0.1 \
-        --output_dir 'output' \
-        --train_in_8bit False \
-        --model_max_length 256 \
-        --use_wandb False \
-        --bf16 False \
-        --tf32 True \
-        --fp16 False \
-        --global_batch_size 1 \
-        --per_device_batch_size 1 \
-        ---gradient_checkpointing True
+    cd /scratch/ym3144/medAlpaca
+    python eval_usmle.py \
+        --model_name 'meta-llama/Llama-3.2-3B' \
+        --prompt_template '../medalpaca/prompt_templates/med_llama3.json' \
+        --base_model 'decapoda-research/llama-13b-hf' \
+        --peft True \
+        --load_in_8bit True \
+        --path_to_exams '/scratch/sp7835/medAlpaca/usmle'
 "
