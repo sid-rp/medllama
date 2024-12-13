@@ -16,6 +16,6 @@ module purge
 source ~/.bashrc
 mamba activate medllama
 
-cd /scratch/sp7835/medAlpaca/
-python medalpaca/train_new.py --finetuning_method galore
+cd /scratch/sp7835/medllama/
+python src/train.py --finetuning_method galore
 
