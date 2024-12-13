@@ -62,7 +62,7 @@ The project utilizes diverse medical datasets:
 creating a new conda environment
 
 ```
-conda create -n medalpaca python>=3.9
+conda create -n medllama "python>=3.9"
 ```
 
 ```

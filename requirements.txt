@@ -5,8 +5,14 @@ black
 black[jupyter]
 datasets
 fire
-git+https://github.com/huggingface/peft.git
-git+https://github.com/huggingface/transformers.git
 gradio
 sentencepiece
-
+torch
+torchvision
+torchaudio
+wandb
+galore-torch
+git+https://github.com/huggingface/peft.git
+git+https://github.com/huggingface/transformers.git
+# For CUDA-enabled PyTorch installation:
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
