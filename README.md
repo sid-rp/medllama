@@ -72,7 +72,7 @@ pip install -r requirements.txt
 ### Training steps
 
 ```
-python3 medalpaca/train_new.py 
+python3 src/train.py 
  --prompt_template <val>
  --model_max_length <val>
  --train_on_inputs <val>
