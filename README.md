@@ -84,6 +84,18 @@ python3 src/train.py
  --finetuning_method <val>
 ```
 
+### Running KnowTuning
+
+```bash
+git clone --depth 1 https://github.com/hiyouga/LLaMA-Factory.git
+cd LLaMA-Factory
+pip install -e ".[torch,metrics]"
+
+llamafactory-cli train knowTuning/llama3_lora_pretrain.yaml
+```
+
+
+
 
 ## Authors
 
