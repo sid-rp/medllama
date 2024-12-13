@@ -1,1 +1,8 @@
-404: Not Found
+{
+    "description": "Enhanced Template for medAlpaca.",
+    "primer": "Below is an instruction describing a task, paired with additional input for context. Write a response that appropriately completes the request, ensuring clarity, detail, and accuracy.",
+    "instruction": "\n\n### Instruction:\n",
+    "input": "\n\n### Input:\n",
+    "output": "\n\n### Response:\n",
+    "response_split": "### Response:"
+}
