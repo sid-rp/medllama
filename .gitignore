@@ -142,7 +142,6 @@ download.txt
 .DS_Store
 .vscode/
 
-usmle/
 wandb/
 output/
 output_lora/
