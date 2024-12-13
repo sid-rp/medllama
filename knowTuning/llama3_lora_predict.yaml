@@ -1,23 +1,24 @@
 ### model
 model_name_or_path: meta-llama/Llama-3.2-3B
+#adapter_name_or_path: saves/llama3-8b/lora/kc/checkpoint-2000
 
 ### method
 stage: sft
 do_predict: true
-predict_with_generate: true
 finetuning_type: lora
 
 ### dataset
-dataset: medquad_test
+eval_dataset: medquad_test
 template: alpaca
+cutoff_len: 2048
+max_samples: 200
 overwrite_cache: true
 preprocessing_num_workers: 16
 
 ### output
 output_dir: saves/llama3-8b/lora/test-base
-plot_loss: true
 overwrite_output_dir: true
 
 ### eval
 per_device_eval_batch_size: 16
-max_samples: 200
+predict_with_generate: true
