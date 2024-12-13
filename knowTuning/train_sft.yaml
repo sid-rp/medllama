@@ -4,18 +4,17 @@ model_name_or_path: meta-llama/Llama-3.2-3B
 ### method
 stage: sft
 do_train: true
-finetuning_type: lora
-lora_target: q_proj,v_proj
+finetuning_type: full
 load_best_model_at_end: true
 
 ### dataset
-dataset: medquad_KA
+dataset: medquad_train
 template: alpaca
 overwrite_cache: true
 preprocessing_num_workers: 16
 
 ### output
-output_dir: saves/llama3-8b/lora/ka
+output_dir: saves/llama3.2-3b/sft/
 logging_steps: 10
 save_steps: 500
 plot_loss: true
